@@ -34,7 +34,7 @@ jobs:
       run: terraform validate
 
     - name: Terraform Plan
-      run: terraform plan -out=tfplan -var="credentials_json=./credentials.json"
+      run: terraform plan -out=tfplan -var="credentials_json=$(cat credentials.json | jq -Rs .)"
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
