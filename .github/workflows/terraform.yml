@@ -23,20 +23,20 @@ jobs:
 
     - name: Authenticate to GCP
       env:
-        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+        GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
       run: |
-        if [ -z "${GOOGLE_CREDENTIALS}" ]; then
-          echo "GOOGLE_CREDENTIALS secret is missing!"
+        if [ -z "${GCP_CREDENTIALS}" ]; then
+          echo "GCP_CREDENTIALS secret is missing!"
           exit 1
         else
-          echo "${GOOGLE_CREDENTIALS}" > credentials.json
+          echo "${GCP_CREDENTIALS}" > credentials.json
         fi
         
     - name: Terraform Init
       run: terraform init
 
     - name: Terraform Plan
-      run: terraform plan -out=tfplan -var="credentials_json=${{ secrets.GOOGLE_CREDENTIALS }}"
+      run: terraform plan -out=tfplan -var="credentials_json=${{ secrets.GCP_CREDENTIALS }}"
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
