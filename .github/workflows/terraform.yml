@@ -43,7 +43,7 @@ jobs:
       id: plan
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
-      run: terraform plan -var="credentials_json=${{ secrets.GCP_CREDENTIALS }}" -out=tfplan
+      run: terraform plan -out=tfplan -var="credentials_json=${{ secrets.GCP_CREDENTIALS }}"
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
