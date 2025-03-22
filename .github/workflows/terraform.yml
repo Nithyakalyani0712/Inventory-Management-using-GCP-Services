@@ -21,9 +21,12 @@ jobs:
 
     - name: Validate Secret Exists
       run: |
+        echo "Checking if GOOGLE_CREDENTIALS is present..."
         if [ -z "${{ secrets.GOOGLE_CREDENTIALS }}" ]; then
           echo "GOOGLE_CREDENTIALS secret is missing!"
           exit 1
+        else
+          echo "GOOGLE_CREDENTIALS secret is successfully detected."
         fi
 
     - name: Debug Secret
