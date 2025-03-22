@@ -3,7 +3,7 @@ variable "credentials_file" {
 }
 
 provider "google" {
-  credentials = file(var.credentials_file)
+  credentials = jsondecode(var.credentials_json)
   project     = "possible-arbor-449017-k8"
   region      = "us-central1"
 }
