@@ -31,6 +31,13 @@ jobs:
         else
           echo "${GCP_CREDENTIALS}" > credentials.json
         fi
+    
+    - name: Verify credentials file
+      run: |
+        echo "Checking if credentials.json exists..."
+        ls -la
+        echo "Displaying credentials.json content:"
+        cat credentials.json
 
     - name: Terraform Init
       run: terraform init
