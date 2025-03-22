@@ -31,12 +31,12 @@ jobs:
         else
           echo "${GCP_CREDENTIALS}" > credentials.json
         fi
-        
+
     - name: Terraform Init
       run: terraform init
 
     - name: Terraform Plan
-      run: terraform plan -out=tfplan -var="credentials_json=${{ secrets.GCP_CREDENTIALS }}"
+      run: terraform plan -out=tfplan -var="credentials_file=./credentials.json"
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
