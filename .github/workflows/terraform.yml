@@ -1,34 +1,39 @@
-name: Terraform CI/CD
+name: Terraform
 
 on:
   push:
     branches:
       - main
   pull_request:
-    branches:
-      - main
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Set up Terraform
+    - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: 1.5.0
+        terraform_version: 1.5.0  # Use your desired Terraform version
 
-    - name: Set up Google Cloud Credentials
-      run: echo "${{ secrets.GCP_CREDENTIALS }}" > credentials.json
+    - name: Validate Secret Exists
+      run: |
+        if [ -z "${{ secrets.GOOGLE_CREDENTIALS }}" ]; then
+          echo "GOOGLE_CREDENTIALS secret is missing!"
+          exit 1
+        fi
+
+    - name: Debug Secret
+      run: echo "${{ secrets.GOOGLE_CREDENTIALS }}" | wc -c
+
+    - name: Print Secret Partially
+      run: echo "${{ secrets.GOOGLE_CREDENTIALS }}" | head -c 50
 
     - name: Terraform Init
       run: terraform init
-
-    - name: Terraform Format Check
-      run: terraform fmt -check
 
     - name: Terraform Validate
       run: terraform validate
@@ -36,8 +41,10 @@ jobs:
     - name: Terraform Plan
       env:
         GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
-      run: terraform plan -out=tfplan -var="credentials_json=${{ secrets.GOOGLE_CREDENTIALS }}"
+      run: terraform plan -out=tfplan
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
       run: terraform apply -auto-approve tfplan
