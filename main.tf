@@ -4,12 +4,12 @@ provider "google" {
   region      = var.region
 }
 
-resource "google_storage_bucket" "my_bucket" {
-  name     = var.bucket_name
-  location = var.region
-  force_destroy = true  # Allows deleting non-empty buckets during 'terraform destroy'
-}
+resource "google_storage_bucket" "bucket" {
+  name          = var.bucket_name
+  location      = var.region
+  force_destroy = true
 
-output "bucket_url" {
-  value = google_storage_bucket.my_bucket.url
+  versioning {
+    enabled = true
+  }
 }

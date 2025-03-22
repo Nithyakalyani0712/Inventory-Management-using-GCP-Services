@@ -4,17 +4,17 @@ variable "credentials_json" {
 }
 
 variable "project_id" {
-  description = "GCP Project ID"
+  description = "The GCP Project ID"
   type        = string
 }
 
 variable "region" {
-  description = "GCP Region"
+  description = "The GCP region to deploy resources"
   type        = string
   default     = "us-central1"
 }
 
 variable "bucket_name" {
-  description = "The name of the GCS bucket to create"
+  description = "The name of the GCS bucket to be created"
   type        = string
 }
