@@ -16,19 +16,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Setup Terraform
+    - name: Set up Terraform
       uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: 1.4.6
+        terraform_version: 1.5.0
 
-    - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v1
-      with:
-        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-
-    - name: Configure gcloud CLI
-      run: |
-        gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+    - name: Set up Google Cloud Credentials
+      run: echo "${{ secrets.GCP_CREDENTIALS }}" > credentials.json
 
     - name: Terraform Init
       run: terraform init
@@ -40,13 +34,8 @@ jobs:
       run: terraform validate
 
     - name: Terraform Plan
-      id: plan
-      env:
-        GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
-      run: terraform plan -out=tfplan -var="credentials_json=${{ secrets.GCP_CREDENTIALS }}"
-
+      run: terraform plan -out=tfplan -var="credentials_json=$(cat credentials.json)"
+      
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
-      env:
-        GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
       run: terraform apply -auto-approve tfplan
