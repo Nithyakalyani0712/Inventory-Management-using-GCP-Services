@@ -41,8 +41,12 @@ jobs:
 
     - name: Terraform Plan
       id: plan
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
       run: terraform plan -out=tfplan
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
       run: terraform apply -auto-approve tfplan
